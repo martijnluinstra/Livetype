@@ -2,9 +2,8 @@
  *                 Livetype base                 *
  *************************************************/
 
-function Livetype(selector){
+function Livetype(selector) {
     var livetypeRoot = document.querySelector(selector);
-    console.log(livetypeRoot);
     livetypeRoot.innerHTML = '\
         <div class="livetype-container">\
             <span id="livetype-target"></span>\
@@ -16,6 +15,8 @@ function Livetype(selector){
     var source = livetypeRoot.querySelector('#livetype-source');
     var dest = livetypeRoot.querySelector('#livetype-target');
     var timer;
+
+    var revisions = [];
 
     emojione.imageType='svg';
 
@@ -29,20 +30,51 @@ function Livetype(selector){
     }
 
 
-    function displayText(){
+    function displayText() {
         var text = escapeHtml(source.value);
         text = text.replace(/\n/g, '<br>');
         text = emojione.toImage(text);
-        dest.innerHTML = text;
+        
+        var rev_string = revisions.join('');
+
+        if (rev_string == text) 
+            return;
+
+        for (var rev = revisions.length; rev > 0 && text.indexOf(rev_string) != 0; rev --)
+            rev_string = revisions.slice(0, rev).join('');
+
+        var remove_start = -1;
+        var remove_end = revisions.length;
+
+        if (rev <= 0 ){
+            remove_start = 0;
+            revisions = [];
+            rev_string = '';
+        } else if (rev < revisions.length) {
+            remove_start = rev+1; 
+            revisions.splice(remove_start, revisions.length-rev);
+        }
+
+        var cur_rev = text.substring(rev_string.length, text.length);
+
+        var rev_element = document.createElement('span');
+        rev_element.id = 'rev-' + revisions.length;
+        rev_element.innerHTML = cur_rev;
+        dest.appendChild(rev_element);
+        
+        if (remove_start > -1)
+            for (var idx=remove_start; idx < remove_end; idx++)
+                dest.removeChild(document.getElementById('rev-'+idx));
+
+        revisions.push(cur_rev);
     }
 
 
-    function livetype_listener(evt){
+    function livetype_listener(evt) {
         clearTimeout(timer);
         var value = source.value;
-        if (source.value.endsWith(' ') || source.value.endsWith('\n') || !source.value){
+        if (source.value.endsWith(' ') || source.value.endsWith('\n') || !source.value)
             displayText();
-        }
         timer = setTimeout(displayText, 1000);
     }
 
