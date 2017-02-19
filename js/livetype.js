@@ -92,11 +92,9 @@ function Livetype(selector) {
         autodisplay = false;
     });
 
-
     livetypeRoot.querySelector('#livetype-reset').addEventListener('click', function(evt){
         source.value = '';
         displayText();
-        source.focus();
     });
 
     livetypeRoot.querySelector('#livetype-form').addEventListener('submit', function(evt){
@@ -105,6 +103,30 @@ function Livetype(selector) {
 }
 
 Livetype('.livetype');
+
+function applyToSelector (selector, map) {
+    var elementList = document.querySelectorAll(selector);
+    for (var i = 0; i < elementList.length; i++)
+        map.call(elementList[i]);
+}
+
+document.getElementById('increase-fontsize').addEventListener('click', function(evt){
+    applyToSelector('.livetype-container', function(){
+        var size = parseInt(this.style.fontSize) || 15;
+        if (size < 50) this.style.fontSize = (size+5) + 'vh';
+    });
+});
+
+document.getElementById('decrease-fontsize').addEventListener('click', function(evt){
+    applyToSelector('.livetype-container', function(){
+        var size = parseInt(this.style.fontSize) || 15;
+        if (size > 5) this.style.fontSize = (size-5) + 'vh';
+    });
+});
+
+document.addEventListener('click', function(){
+    document.getElementById('livetype-source').focus();
+});
 
 
 /*************************************************

@@ -6,6 +6,7 @@
     <meta name="mobileoptimized" content="0">
     <title>Livetype</title>
     <link rel="stylesheet" href="//cdn.jsdelivr.net/emojione/2.2.7/assets/css/emojione.min.css"/>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <link rel="stylesheet" href="css/livetype.css" type="text/css">
 </head>
 <body>
@@ -14,7 +15,23 @@
             Waiting for javascript...
         </div>
         <footer>
-            Livetype - by <a href="https://www.martijnluinstra.nl/">Martijn Luinstra</a>
+            <ul class="credits">
+                <li>Livetype</li>
+                <li>&ndash;</li>
+                <li>by <a href="https://www.martijnluinstra.nl/" target="_blank">Martijn Luinstra</a></li>
+            </ul>
+            <ul class="controls">
+                <li>
+                    <button type="button" id="decrease-fontsize">
+                        <i class="fa fa-search-minus" aria-hidden="true"></i>
+                    </button>
+                </li>
+                <li>
+                    <button type="button" id="increase-fontsize">
+                        <i class="fa fa-search-plus" aria-hidden="true"></i>
+                    </button>
+                </li>
+            </ul>            
         </footer>
     </div>
     <script src="//cdn.jsdelivr.net/emojione/2.2.7/lib/js/emojione.min.js"></script>
