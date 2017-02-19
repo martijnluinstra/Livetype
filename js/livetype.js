@@ -14,6 +14,7 @@ function Livetype(selector) {
         </form>';
     var source = livetypeRoot.querySelector('#livetype-source');
     var dest = livetypeRoot.querySelector('#livetype-target');
+    var autodisplay = false;
     var timer;
 
     var revisions = [];
@@ -75,11 +76,22 @@ function Livetype(selector) {
         var value = source.value;
         if (source.value.endsWith(' ') || source.value.endsWith('\n') || !source.value)
             displayText();
-        timer = setTimeout(displayText, 1000);
+        if (!autodisplay)
+            timer = setTimeout(displayText, 1000);
     }
 
     source.addEventListener('keyup', livetype_listener);
     source.addEventListener('change', livetype_listener);
+
+    source.addEventListener('startAutocomplete', function(){
+        clearTimeout(timer);
+        autodisplay = true;
+    });
+    source.addEventListener('stopAutocomplete', function(){
+        timer = setTimeout(displayText, 1000);
+        autodisplay = false;
+    });
+
 
     livetypeRoot.querySelector('#livetype-reset').addEventListener('click', function(evt){
         source.value = '';
@@ -144,7 +156,15 @@ $(document).ready(function() {
     ],{
         placement: 'top',
         footer: '<a href="http://www.emoji.codes" target="_blank">Browse All<span class="arrow">»</span></a>'
-    }).on('textComplete:select', function (e, value, strategy) {
-        this.dispatchEvent(new Event('change'));
+    }).on({
+        'textComplete:select': function (e, value, strategy) {
+            this.dispatchEvent(new Event('change'));
+        },
+        'textComplete:show': function (e) {
+            this.dispatchEvent(new CustomEvent('startAutocomplete'));
+        },
+        'textComplete:hide': function (e) {
+            this.dispatchEvent(new CustomEvent('stopAutocomplete'));
+        }
     });
 });
